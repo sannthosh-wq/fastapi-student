@@ -2,26 +2,122 @@
 <html>
 <head>
     <title>Student Result Management</title>
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(to right, #4e73df, #10e488);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 110vh;
+        }
+
+        .container {
+            background-color: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            width: 800px;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            color: black;
+        }
+
+        input {
+            width: 90%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #4e73df;
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            background-color: #4e73df;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background-color:blue;
+        }
+
+        #result {
+            margin-top: 20px;
+            font-weight: bold;
+            color:black;
+            padding: 10px;
+            border-radius: 6px;
+
+        }
+
+        .marks-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        .marks-table th {
+            background-color: #4e73df;
+            color: white;
+            padding: 8px;
+        }
+
+        .marks-table td {
+            padding: 8px;
+            border: 1px solid #ddd;
+        }
+
+        .marks-table tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        .marks-table tr:hover {
+            background-color: #e2e6f5;
+        }
+
+    </style>
 </head>
+
 <body>
-    <center>
-    <h2>Student Result Management System</h2>
 
-    <!-- Register Number Input -->
-    <input type="text" id="register" placeholder="Enter Register Number">
+    <div class="container">
+        <h2>Student Result Management System</h2>
 
-    <!-- Button -->
-    <button onclick="getResult()">Get Result</button>
+        <input type="text" id="register" placeholder="Enter Your Register Number">
 
-    <!-- Output -->
-    <p id="result"></p>
-    </center>
+        <br>
+        <button onclick="getResult()">Get Result</button>
+
+        <p id="result"></p>
+    </div>
 
     <script>
         async function getResult() {
             const reg = document.getElementById("register").value;
 
-            const response = await fetch("http://127.0.0.1:8000/result/" + reg);
+            if (!reg) {
+                document.getElementById("result").innerText = "Please Enter Your Register Number";
+                return;
+            }
+
+            const response = await fetch("/result/" + reg);
 
             if (response.status === 404) {
                 document.getElementById("result").innerText = "Student not found";
@@ -30,10 +126,62 @@
 
             const data = await response.json();
 
-            document.getElementById("result").innerText =
-                "Name: " + data.Name +
-                " | Register No: " + data.Register_Number +
-                " | Result: " + data.Result;
+            document.getElementById("result").innerHTML = `
+
+                <h3>Student Marksheet</h3>
+
+                <table class="marks-table">
+
+                    <tr>
+                        <th colspan="2">Student Details</th>
+                    </tr>
+
+                    <tr>
+                        <td>Name</td>
+                        <td>${data.Name}</td>
+                    </tr>
+
+                    <tr>
+                        <td>Register Number</td>
+                        <td>${data.Register_Number}</td>
+                    </tr>
+
+                    <tr>
+                        <th colspan="2">Subject Marks</th>
+                    </tr>
+
+                    <tr>
+                        <td>Tamil</td>
+                        <td>${data.Tamil}</td>
+                    </tr>
+
+                    <tr>
+                        <td>English</td>
+                        <td>${data.English}</td>
+                    </tr>
+
+                    <tr>
+                        <td>Maths</td>
+                        <td>${data.Maths}</td>
+                    </tr>
+
+                    <tr>
+                        <td>Science</td>
+                        <td>${data.Science}</td>
+                    </tr>
+
+                    <tr>
+                        <td>Social</td>
+                        <td>${data.Social}</td>
+                    </tr>
+
+                    <tr>
+                        <th>Final Result</th>
+                        <th>${data.Result}</th>
+                    </tr>
+
+                </table>
+            `;
         }
     </script>
 
