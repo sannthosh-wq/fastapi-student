@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Student Result Management</title>
+</head>
+<body>
+    <center>
+    <h2>Student Result Management System</h2>
+
+    <!-- Register Number Input -->
+    <input type="text" id="register" placeholder="Enter Register Number">
+
+    <!-- Button -->
+    <button onclick="getResult()">Get Result</button>
+
+    <!-- Output -->
+    <p id="result"></p>
+    </center>
+
+    <script>
+        async function getResult() {
+            const reg = document.getElementById("register").value;
+
+            const response = await fetch("http://127.0.0.1:8000/result/" + reg);
+
+            if (response.status === 404) {
+                document.getElementById("result").innerText = "Student not found";
+                return;
+            }
+
+            const data = await response.json();
+
+            document.getElementById("result").innerText =
+                "Name: " + data.Name +
+                " | Register No: " + data.Register_Number +
+                " | Result: " + data.Result;
+        }
+    </script>
+
+</body>
+</html>
